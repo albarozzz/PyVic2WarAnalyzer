@@ -34,7 +34,7 @@ class GameFile:
                             for _ in self.reader:
                                 try:
                                     # print(_)
-                                    self.localisations.update({_[0]: _[self.lang_index]})
+                                    self.localisations.update({_[0]: _[self.lang_index] if _[self.lang_index] != "" else _[1]})
                                 except IndexError:
                                     pass
             else:
