@@ -15,7 +15,7 @@ setup(
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
-        'Topic :: Other/Non-listed topic',
+        'Topic :: Other/Nonlisted Topic',
         'License :: OSI Approved :: The Unlicense (Unlicense)',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
