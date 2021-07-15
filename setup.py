@@ -5,7 +5,7 @@ setup(
     version='1.1',
     packages=find_packages(),
     url='https://github.com/InternetExplorer404/PyVic2WarAnalyzer',
-    download_url="https://github.com/InternetExplorer404/PyVic2WarAnalyzer/archive/refs/tags/v11.tar.gz",
+    download_url="https://github.com/InternetExplorer404/PyVic2WarAnalyzer/archive/refs/tags/v1.1.tar.gz",
     include_package_data=True,
     license='Unlicense',
     author='Alvaro',
