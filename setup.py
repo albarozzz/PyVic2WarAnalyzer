@@ -1,11 +1,12 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='PyVic2WarAnalyzer',
+    name='pyvic2waranalyzer',
     version='1',
     packages=find_packages(),
     url='https://github.com/InternetExplorer404/PyVic2WarAnalyzer',
-    download_url="",
+    download_url="https://github.com/InternetExplorer404/PyVic2WarAnalyzer/archive/refs/tags/v1.tar.gz",
+    include_package_data=True,
     license='Unlicense',
     author='Alvaro',
     author_email='',
