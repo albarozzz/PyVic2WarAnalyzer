@@ -4,43 +4,50 @@ import glob
 from .utils.types import *
 import pkg_resources
 
-# COLUMNS = ("Key", "English", "French", "German", "Polish", "Spanish", "Italian",
-#            "Swedish", "Czech", "Hungarian", "Dutch", "Portuguese", "Russian", "Finnish")
+COLUMNS = ("Key", "English", "French", "German", "Polish", "Spanish", "Italian",
+            "Swedish", "Czech", "Hungarian", "Dutch", "Portuguese", "Russian", "Finnish")
 
 
 class GameFile:
-    def __init__(self, localisation_folder=pkg_resources.resource_listdir("pyvic2waranalyzer", "localisation")):
+    def __init__(self, localisation_folder=pkg_resources.resource_listdir("pyvic2waranalyzer", "localisation"), lang="English"):
         self.localisations = {}
         self.file = None
         self.reader = None
-        print(localisation_folder)
-        if isinstance(localisation_folder, list):
-            for a in localisation_folder:
-                filename = pkg_resources.resource_filename("pyvic2waranalyzer", os.path.join("localisation", a))
-                # print(filename)
-                # self.file = pkg_resources.resource_string("pyvic2waranalyzer", os.path.join("localisation", a)).decode("latin-1")
-                if filename.endswith(".csv"):
-                    with open(filename, "r", newline="", encoding="latin-1", errors="ignore") as self.file:
+        self.lang_index = 1
+        for pos, language in enumerate(COLUMNS, 0):
+            if language == "Key":
+                continue
+            if lang.lower() == language.lower():
+                self.lang_index = pos
+        # print(localisation_folder)
+        if localisation_folder:
+            if isinstance(localisation_folder, list):
+                for a in localisation_folder:
+                    filename = pkg_resources.resource_filename("pyvic2waranalyzer", os.path.join("localisation", a))
+                    # print(filename)
+                    # self.file = pkg_resources.resource_string("pyvic2waranalyzer", os.path.join("localisation", a)).decode("latin-1")
+                    if filename.endswith(".csv"):
+                        with open(filename, "r", newline="", encoding="latin-1", errors="ignore") as self.file:
+                            self.file.seek(0)
+                            self.reader = csv.reader(self.file, delimiter=";")
+                            next(self.reader)
+                            for _ in self.reader:
+                                try:
+                                    # print(_)
+                                    self.localisations.update({_[0]: _[self.lang_index]})
+                                except IndexError:
+                                    pass
+            else:
+                for a in glob.glob(os.path.join(localisation_folder, "*.csv")):
+                    with open(a, "r", newline="", encoding="latin-1", errors="ignore") as self.file:
                         self.file.seek(0)
                         self.reader = csv.reader(self.file, delimiter=";")
                         next(self.reader)
                         for _ in self.reader:
                             try:
-                                # print(_)
-                                self.localisations.update({_[0]: _[1]})
+                                self.localisations.update({_[0]: _[self.lang_index]})
                             except IndexError:
                                 pass
-        else:
-            for a in glob.glob(os.path.join(localisation_folder, "*.csv")):
-                with open(a, "r", newline="", encoding="latin-1", errors="ignore") as self.file:
-                    self.file.seek(0)
-                    self.reader = csv.reader(self.file, delimiter=";")
-                    next(self.reader)
-                    for _ in self.reader:
-                        try:
-                            self.localisations.update({_[0]: _[1]})
-                        except IndexError:
-                            pass
         self.sl = None
         self.attackerDefender = None
         self.battleProcessing = False
@@ -53,7 +60,7 @@ class GameFile:
         self.bracketCounter = 0
         self.wargoal_disabled = False
 
-    def scan(self, filename):
+    def scan(self, filename) -> list:
         self.sl = None
         self.attackerDefender = None
         self.battleProcessing = False
@@ -118,6 +125,7 @@ class GameFile:
         return line.replace('"', '')
 
     def wargoalreader(self, line):
+        # TODO: list of wargoals?
         # wargoal[self.wargoalcounter]
         if "state_province_id=" in line:
             # print(line)
