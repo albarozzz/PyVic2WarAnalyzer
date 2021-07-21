@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 extras_require = {
     "docs": ["sphinx==4.1.1", "sphinx-rtd-theme==0.5.2", "sphinxcontrib-napoleon", "sphinxcontrib-serializinghtml",
-             "sphinxcontrib-htmlhelp", "sphinxcontrib-applehelp", "sphinxcontrib-jsmath"]
+             "sphinxcontrib-htmlhelp", "sphinxcontrib-applehelp", "sphinxcontrib-jsmath", "myst_parser"]
 }
 
 setup(
