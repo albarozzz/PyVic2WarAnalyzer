@@ -1,5 +1,10 @@
 from setuptools import setup, find_packages
 
+install_requires = {
+    "docs": ["sphinx==4.1.1", "sphinx-rtd-theme==0.5.2", "sphinxcontrib-napoleon", "sphinxcontrib-serializinghtml",
+             "sphinxcontrib-htmlhelp", "sphinxcontrib-applehelp", "sphinxcontrib-jsmath"]
+}
+
 setup(
     name='pyvic2waranalyzer',
     version='1.2.2',
@@ -10,7 +15,7 @@ setup(
     license='Unlicense',
     author='Alvaro',
     author_email='',
-    install_requires=[],
+    install_requires=install_requires,
     description='Victoria 2 War Analyzer written in Python!',
     classifiers=[
         'Development Status :: 3 - Alpha',
