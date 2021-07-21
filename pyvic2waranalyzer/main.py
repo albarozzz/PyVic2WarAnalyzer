@@ -1,6 +1,9 @@
 import csv
 import os
 import glob
+
+from typing import List
+
 from .utils.types import *
 import pkg_resources
 
@@ -10,6 +13,15 @@ COLUMNS = ("Key", "English", "French", "German", "Polish", "Spanish", "Italian",
 
 class GameFile:
     def __init__(self, localisation_folder=pkg_resources.resource_listdir("pyvic2waranalyzer", "localisation"), lang="English"):
+        """Initializes the parser
+
+        Parameters
+        ----------
+        localisation_folder: :class:`str` or :class:`list` or :class:`None`
+            Indicates a localisation folder with .csv files.
+        lang: :class:`str`
+            Indicates the language to translate.
+        """
         self.localisations = {}
         self.file = None
         self.reader = None
@@ -38,14 +50,14 @@ class GameFile:
                                 except IndexError:
                                     pass
             else:
-                for a in glob.glob(os.path.join(localisation_folder, "*.csv")):
-                    with open(a, "r", newline="", encoding="latin-1", errors="ignore") as self.file:
+                for filename in glob.glob(os.path.join(localisation_folder, "*.csv")):
+                    with open(filename, "r", newline="", encoding="latin-1", errors="ignore") as self.file:
                         self.file.seek(0)
                         self.reader = csv.reader(self.file, delimiter=";")
                         next(self.reader)
                         for _ in self.reader:
                             try:
-                                self.localisations.update({_[0]: _[self.lang_index]})
+                                self.localisations.update({_[0]: _[self.lang_index] if _[self.lang_index] != "" else _[1]})
                             except IndexError:
                                 pass
         self.sl = None
@@ -60,7 +72,17 @@ class GameFile:
         self.bracketCounter = 0
         self.wargoal_disabled = False
 
-    def scan(self, filename) -> list:
+    def scan(self, filename):
+        """Scan the save file, returns a list of :class:`War`
+
+        Parameters
+        ----------
+        filename: :class:`str` or :class:`bytes`
+
+        Returns
+        -------
+        List[:class:`War`]
+        """
         self.sl = None
         self.attackerDefender = None
         self.battleProcessing = False
@@ -139,9 +161,9 @@ class GameFile:
                 self.war[self.warcounter].wargoal.casus_belli = self.localize(line)
             except:
                 self.war[self.warcounter].wargoal = Wargoal(casus_belli=self.localize(line))
-        elif "country=" in line:
-            line = self.nameextractor(line)
-            self.war[self.warcounter].wargoal.country = self.localize(line)
+        # elif "country=" in line:
+        #     line = self.nameextractor(line)
+        #     self.war[self.warcounter].wargoal.country = self.localize(line)
         elif "actor=" in line:
             line = self.nameextractor(line)
             # print(self.wargoalcounter, self.war[self.warcounter].wargoal)

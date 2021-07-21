@@ -1,5 +1,19 @@
 class War:
-    def __init__(self, name=None, action=None):
+    """Represents a war between 2 nations or more
+
+    Attributes
+    ----------
+    attackers: :class:`list`
+        All attackers.
+    defenders: :class:`list`
+        All defenders.
+    battles: List[:class:`Battle`]
+        A list of all battles in that war.
+    wargoal: :class:`Wargoal`
+        The original wargoal.
+    action: :class:`str`
+    """
+    def __init__(self, name: str = None, action: str = None):
         self.name = name
         self.attackers = []
         self.defenders = []
@@ -8,14 +22,20 @@ class War:
         self.action = action
 
     @property
-    def total_losses(self):
+    def total_losses(self) -> int:
+        """
+        All losses from a :class:`War`
+        """
         total = 0
         for a in self.battles:
             total += a.total_losses
         return total
 
     @property
-    def total_army(self):
+    def total_army(self) -> int:
+        """
+        All forces from a :class:`War`
+        """
         total = 0
         for c in self.battles:
             total += c.total_army
@@ -53,8 +73,28 @@ class War:
 
 
 class Battle:
-    def __init__(self, name=None, location=None, result=None, defender=None, attacker=None, attackerLosses=0,
-                 defenderLosses=0, attackerLeader=None, defenderLeader=None):
+    """Represents a battle in a :class:`War`
+
+    Attributes
+    ----------
+    name: :class:`str`
+        Indicates the battle name, aka the province name
+    location: :class:`int`
+        Indicates a province id
+    result: :class:`bool`
+        Indicates if the attacker won the battle or else
+    defender: :class:`str`
+    attacker: :class:`str`
+    attackerLosses: :class:`int`
+    defenderLosses: :class:`int`
+    attackerLeader: :class:`str`
+    defenderLeader: :class:`str`
+    attackerArmy: :class:`dict`
+    defenderArmy: :class:`dict`
+    """
+    def __init__(self, name: str = None, location: int = None, result: bool = None, defender: str = None,
+                 attacker: str = None, attackerLosses: int = 0,
+                 defenderLosses: int = 0, attackerLeader: str = None, defenderLeader: str = None):
         self.name = name
         self.location = location
         self.result = result
@@ -68,11 +108,17 @@ class Battle:
         self.defenderArmy = {}
 
     @property
-    def total_losses(self):
+    def total_losses(self) -> int:
+        """
+        All losses from a :class:`Battle`
+        """
         return self.defenderLosses + self.attackerLosses
 
     @property
-    def total_army(self):
+    def total_army(self) -> int:
+        """
+        All forces from a :class:`Battle`
+        """
         total = 0
         for a in self.attackerArmy.values():
             total += a
@@ -112,15 +158,39 @@ class Battle:
 
 
 class Wargoal:
+    """Represents a wargoal in a :class:`War`
+
+    Attributes
+    ----------
+    state: :class:`int`
+        A state id from 'take state' CB.
+    casus_belli: :class:`str`
+        The name of the casus belli.
+    actor: :class:`str`
+        The country which made this wargoal.
+    receiver: :class:`str`
+        The country which received this wargoal.
+    date: :class:`str`
+        Wargoal date.
+    is_fulfilled: :class:`bool`
+        May not be present, only if it's an active war.
+    score: :class:`float`
+        May not be present, only if it's an active war.
+    change: :class:`float`
+        May not be present, only if it's an active war.
+    """
+
     aliases = {
         'casus': 'casus_belli',
         'casusbelli': 'casus_belli',
     }
-    def __init__(self, state=None, casus_belli=None, country=None, actor=None, receiver=None, date=None, is_fulfilled=None,
-                 score=None, change=None):
+
+    def __init__(self, state: int = None, casus_belli: str = None, actor: str = None,
+                 receiver: str = None, date: str = None, is_fulfilled: bool = None,
+                 score: float = None, change: float = None):
+
         self.state = state
         self.casus_belli = casus_belli
-        self.country = country
         self.actor = actor
         self.receiver = receiver
         self.date = date
