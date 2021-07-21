@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-install_requires = {
+extras_require = {
     "docs": ["sphinx==4.1.1", "sphinx-rtd-theme==0.5.2", "sphinxcontrib-napoleon", "sphinxcontrib-serializinghtml",
              "sphinxcontrib-htmlhelp", "sphinxcontrib-applehelp", "sphinxcontrib-jsmath"]
 }
@@ -15,7 +15,7 @@ setup(
     license='Unlicense',
     author='Alvaro',
     author_email='',
-    install_requires=install_requires,
+    extra_require=extras_require,
     description='Victoria 2 War Analyzer written in Python!',
     classifiers=[
         'Development Status :: 3 - Alpha',
