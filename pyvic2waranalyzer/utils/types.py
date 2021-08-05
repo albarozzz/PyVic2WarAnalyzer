@@ -1,3 +1,87 @@
+class Wargoal:
+    """Represents a wargoal in a :class:`War`
+
+    Attributes
+    ----------
+    state: :class:`int`
+        A state id from 'take state' CB.
+    casus_belli: :class:`str`
+        The name of the casus belli.
+    actor: :class:`str`
+        The country which made this wargoal.
+    country: :class:`str`
+        TAG or country which
+    receiver: :class:`str`
+        The country which received this wargoal.
+    date: :class:`str`
+        Wargoal date.
+    is_fulfilled: :class:`bool`
+        May not be present, only if it's an active war.
+    score: :class:`float`
+        May not be present, only if it's an active war.
+    change: :class:`float`
+        May not be present, only if it's an active war.
+    """
+
+    aliases = {
+        'casus': 'casus_belli',
+        'casusbelli': 'casus_belli',
+    }
+
+    def __init__(self, state: int = None, casus_belli: str = None, actor: str = None,
+                 receiver: str = None, date: str = None, is_fulfilled: bool = None,
+                 score: float = None, change: float = None, country: str = None):
+
+        self.state = state
+        self.casus_belli = casus_belli
+        self.country = country
+        self.actor = actor
+        self.receiver = receiver
+        self.date = date
+        self.is_fulfilled = is_fulfilled
+        self.score = score
+        self.change = change
+
+    def __setattr__(self, name, value):
+        name = self.aliases.get(name, name)
+        object.__setattr__(self, name, value)
+
+    def __getattr__(self, name):
+        if name == "aliases":
+            raise AttributeError  # http://nedbatchelder.com/blog/201010/surprising_getattr_recursion.html
+        name = self.aliases.get(name, name)
+        return object.__getattribute__(self, name)
+
+    def __bool__(self):
+        if self.casus_belli and self.actor and self.receiver:
+            return True
+        else:
+            return False
+
+    def __str__(self):
+        return self.casus_belli
+
+class OriginalWargoal(Wargoal):
+    """Represents an original wargoal in a :class:`War`
+
+    Attributes
+    ----------
+    state: :class:`int`
+        A state id from 'take state' CB.
+    casus_belli: :class:`str`
+        The name of the casus belli.
+    actor: :class:`str`
+        The country which made this wargoal.
+    receiver: :class:`str`
+        The country which received this wargoal.
+    """
+    def __init__(self, state: int = None, casus_belli: str = None, actor: str = None, receiver: str = None):
+        self.state = state
+        self.casus_belli = casus_belli
+        self.actor = actor
+        self.receiver = receiver
+        super().__init__(state=self.state, casus_belli=self.casus_belli, actor=self.actor, receiver=self.receiver)
+
 class War:
     """Represents a war between 2 nations or more
 
@@ -9,16 +93,17 @@ class War:
         All defenders.
     battles: List[:class:`Battle`]
         A list of all battles in that war.
-    wargoal: :class:`Wargoal`
-        The original wargoal.
+    wargoals: :class:`Wargoal`
+        The list of wargoals.
     action: :class:`str`
     """
-    def __init__(self, name: str = None, action: str = None):
+    def __init__(self, name: str = None,
+                 action: str = None):
         self.name = name
         self.attackers = []
         self.defenders = []
         self.battles = []
-        self.wargoal = None
+        self.wargoals = []
         self.action = action
 
     @property
@@ -156,63 +241,3 @@ class Battle:
         else:
             return False
 
-
-class Wargoal:
-    """Represents a wargoal in a :class:`War`
-
-    Attributes
-    ----------
-    state: :class:`int`
-        A state id from 'take state' CB.
-    casus_belli: :class:`str`
-        The name of the casus belli.
-    actor: :class:`str`
-        The country which made this wargoal.
-    receiver: :class:`str`
-        The country which received this wargoal.
-    date: :class:`str`
-        Wargoal date.
-    is_fulfilled: :class:`bool`
-        May not be present, only if it's an active war.
-    score: :class:`float`
-        May not be present, only if it's an active war.
-    change: :class:`float`
-        May not be present, only if it's an active war.
-    """
-
-    aliases = {
-        'casus': 'casus_belli',
-        'casusbelli': 'casus_belli',
-    }
-
-    def __init__(self, state: int = None, casus_belli: str = None, actor: str = None,
-                 receiver: str = None, date: str = None, is_fulfilled: bool = None,
-                 score: float = None, change: float = None):
-
-        self.state = state
-        self.casus_belli = casus_belli
-        self.actor = actor
-        self.receiver = receiver
-        self.date = date
-        self.is_fulfilled = is_fulfilled
-        self.score = score
-        self.change = change
-
-    def __setattr__(self, name, value):
-        name = self.aliases.get(name, name)
-        object.__setattr__(self, name, value)
-
-    def __getattr__(self, name):
-        if name == "aliases":
-            raise AttributeError  # http://nedbatchelder.com/blog/201010/surprising_getattr_recursion.html
-        name = self.aliases.get(name, name)
-        return object.__getattribute__(self, name)
-
-    def __bool__(self):
-        if self.casus_belli and self.actor and self.receiver:
-            return True
-        else:
-            return False
-
-    def __str__(self):
-        return self.casus_belli

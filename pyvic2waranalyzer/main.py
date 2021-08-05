@@ -64,6 +64,7 @@ class GameFile:
         self.attackerDefender = None
         self.battleProcessing = False
         self.warGoalProcessing = False
+        self.OriginalwarGoalProcessing = False
         self.warProcessing = False
         self.war = []
         self.iter_ = 0
@@ -87,6 +88,7 @@ class GameFile:
         self.attackerDefender = None
         self.battleProcessing = False
         self.warGoalProcessing = False
+        self.OriginalwarGoalProcessing = False
         self.warProcessing = False
         self.war = []
         self.iter_ = 0
@@ -110,17 +112,34 @@ class GameFile:
                 self.bracketCounterChange(self.sl[i])
 
                 if "battle=" in self.sl[i] or self.battleProcessing:
+                    # print(self.sl[i], "battle")
                     # print("BATALLA", self.sl[i])
+                    if self.iter_ == 0 or "battle=" in self.sl[i] and not self.battleProcessing:
+                        # print("created battle", self.sl[i])
+                        if not self.battleProcessing:
+                            self.war[self.warcounter].battles.append(Battle())
+
                     self.battleProcessing = True
                     self.BattleReader(self.sl[i])
-                elif "war_goal=" in self.sl[i] or "original_wargoal=" in self.sl[i] or self.warGoalProcessing and not self.wargoal_disabled:
+                elif "war_goal=" in self.sl[i] or self.warGoalProcessing and not self.wargoal_disabled:
+                    if self.wargoalcounter == 0 or "war_goal=" in self.sl[i]:
+                        if not self.warGoalProcessing:
+                            self.war[self.warcounter].wargoals.append(Wargoal())
                     self.warGoalProcessing = True
+                    self.wargoalreader(self.sl[i])
+                elif "original_wargoal=" in self.sl[i] or self.OriginalwarGoalProcessing and not self.wargoal_disabled:
+                    if self.wargoalcounter == 0 or "original_wargoal=" in self.sl[i]:
+                        if not self.OriginalwarGoalProcessing:
+                            self.war[self.warcounter].wargoals.append(OriginalWargoal())
+                    self.OriginalwarGoalProcessing = True
                     self.wargoalreader(self.sl[i])
                 else:
                     # print("guerra", self.sl[i])
+                    # print(self.sl[i], "war_parse")
                     self.war_parse(self.sl[i])
             try:
                 if self.bracketCounter == 0 and self.warProcessing and not self.war[self.warcounter].name == "":
+                    # print(self.sl[i], "next_war")
                     self.warGoalProcessing = False
                     self.wargoalcounter = 0
                     self.iter_ = 0
@@ -148,54 +167,55 @@ class GameFile:
 
     def wargoalreader(self, line):
         # TODO: list of wargoals?
-        # wargoal[self.wargoalcounter]
+        # wargoal
         if "state_province_id=" in line:
             # print(line)
             line = self.nameextractor(line)
-            self.war[self.warcounter].wargoal = Wargoal(state=int(line))
-        elif "casus_belli" in line:
+            self.war[self.warcounter].wargoals[self.wargoalcounter].state = line
+        elif "casus_belli=" in line:
             # print(line)
             # print(line)
             line = self.nameextractor(line)
-            try:
-                self.war[self.warcounter].wargoal.casus_belli = self.localize(line)
-            except:
-                self.war[self.warcounter].wargoal = Wargoal(casus_belli=self.localize(line))
-        # elif "country=" in line:
-        #     line = self.nameextractor(line)
-        #     self.war[self.warcounter].wargoal.country = self.localize(line)
+            self.war[self.warcounter].wargoals[self.wargoalcounter].casus_belli = self.localize(line)
+        elif "country=" in line:
+            line = self.nameextractor(line)
+            self.war[self.warcounter].wargoals[self.wargoalcounter].country = self.localize(line)
         elif "actor=" in line:
             line = self.nameextractor(line)
-            # print(self.wargoalcounter, self.war[self.warcounter].wargoal)
-            self.war[self.warcounter].wargoal.actor = self.localize(line)
+            # print(self.wargoalcounter, self.war[self.warcounter].wargoals[self.wargoalcounter])
+            self.war[self.warcounter].wargoals[self.wargoalcounter].actor = self.localize(line)
         elif "receiver=" in line:
             line = self.nameextractor(line)
-            self.war[self.warcounter].wargoal.receiver = self.localize(line)
+            self.war[self.warcounter].wargoals[self.wargoalcounter].receiver = self.localize(line)
         elif "score=" in line:
             # print(line)
             line = self.nameextractor(line)
-            self.war[self.warcounter].wargoal.score = float(line)
+            self.war[self.warcounter].wargoals[self.wargoalcounter].score = float(line)
         elif "change=" in line:
             # print(line)
             line = self.nameextractor(line)
-            self.war[self.warcounter].wargoal.change = float(line)
+            self.war[self.warcounter].wargoals[self.wargoalcounter].change = float(line)
         elif "date=" in line:
             # print(line)
             line = self.nameextractor(line)
-            self.war[self.warcounter].wargoal.date = line
+            self.war[self.warcounter].wargoals[self.wargoalcounter].date = line
         elif "is_fulfilled=" in line:
             # print(line)
             line = self.nameextractor(line)
-            self.war[self.warcounter].wargoal.is_fulfilled = True if line == "yes" else False
+            self.war[self.warcounter].wargoals[self.wargoalcounter].is_fulfilled = True if line == "yes" else False
         elif "}" in line:
             # print(line)
+            if not self.war[self.warcounter].wargoals[self.wargoalcounter]:
+                del self.war[self.warcounter].wargoals[self.wargoalcounter]
+                self.wargoalcounter -= 1
             self.warGoalProcessing = False
+            self.OriginalwarGoalProcessing = False
             self.wargoalcounter += 1
 
     def BattleReader(self, line):
         if "name=" in line:
             name = self.nameextractor(line)
-            self.war[self.warcounter].battles.append(Battle(name=name))
+            self.war[self.warcounter].battles[self.iter_].name = name
             self.attackerDefender = True
         elif "location=" in line:
             location = int(self.nameextractor(line))
@@ -229,6 +249,9 @@ class GameFile:
             else:
                 losses_def = line
                 self.war[self.warcounter].battles[self.iter_].defenderLosses = losses_def
+                if not self.war[self.warcounter].battles[self.iter_]:
+                    del self.war[self.warcounter].battles[self.iter_]
+                    self.iter_ -= 1
                 self.iter_ += 1
                 self.battleProcessing = False
 
@@ -252,25 +275,33 @@ class GameFile:
             self.war.append(War(name=line))
         elif "1=" in line:
             pass
-        elif "add_attacker=" in line:
-            line = self.localize(self.nameextractor(line).strip())
-            self.war[self.warcounter].attackers.append(line)
-        elif "add_defender=" in line:
-            line = self.localize(self.nameextractor(line).strip())
-            self.war[self.warcounter].defenders.append(line)
+        # elif "add_attacker=" in line:
+        #     line = self.localize(self.nameextractor(line).strip())
+        #     self.war[self.warcounter].attackers.append(line)
+        # elif "add_defender=" in line:
+        #     line = self.localize(self.nameextractor(line).strip())
+        #     self.war[self.warcounter].defenders.append(line)
         elif "attacker=" in line:
             line = self.localize(self.nameextractor(line).strip())
-            if line not in self.war[self.warcounter].attackers:
-                self.war[self.warcounter].attackers.insert(0, line)
+            if line != "---":
+                if line not in self.war[self.warcounter].attackers:
+                    self.war[self.warcounter].attackers.insert(0, line)
+            else:
+                pass
         elif "defender=" in line:
             line = self.localize(self.nameextractor(line).strip())
-            if line not in self.war[self.warcounter].defenders:
-                self.war[self.warcounter].defenders.insert(0, line)
+            if line != "---":
+                if line not in self.war[self.warcounter].defenders:
+                    self.war[self.warcounter].defenders.insert(0, line)
+            else:
+                pass
         elif "action=" in line:
             line = self.nameextractor(line)
             self.war[self.warcounter].action = line
 
     def is_previous_war(self, index):
-        return "previous_war=" in self.sl[index] or "active_war=" in self.sl[index] and "{" in self.sl[
-            index + 1] and "name=" in self.sl[
-                   index + 2] and not 'name="American War of Independence"' in self.sl[index + 2]
+        return "previous_war=" in self.sl[index] or "active_war=" in self.sl[index] and "{" in self.sl[index + 1] \
+            and "name=" in self.sl[index + 2] \
+            and 'American War of Independence' not in self.sl[index + 2] \
+            and 'Texan War of Independence' not in self.sl[index + 2] \
+            and 'Ottoman Restoration of Tripoli' not in self.sl[index + 2]
