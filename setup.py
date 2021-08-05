@@ -2,20 +2,20 @@ from setuptools import setup, find_packages
 
 extras_require = {
     "docs": ["sphinx==4.1.1", "sphinx-rtd-theme==0.5.2", "sphinxcontrib-napoleon", "sphinxcontrib-serializinghtml",
-             "sphinxcontrib-htmlhelp", "sphinxcontrib-applehelp", "sphinxcontrib-jsmath", "myst_parser"]
+             "sphinxcontrib-htmlhelp", "sphinxcontrib-applehelp", "sphinxcontrib-jsmath", "myst-parser"]
 }
 
 setup(
     name='pyvic2waranalyzer',
-    version='1.4',
+    version='1.4.1',
     packages=find_packages(),
     url='https://github.com/InternetExplorer404/PyVic2WarAnalyzer',
-    download_url="https://github.com/InternetExplorer404/PyVic2WarAnalyzer/archive/refs/tags/v1.4.tar.gz",
+    download_url="https://github.com/InternetExplorer404/PyVic2WarAnalyzer/archive/refs/tags/v1.4.1.tar.gz",
     include_package_data=True,
     license='Unlicense',
     author='Alvaro',
     author_email='',
-    extra_require=extras_require,
+    extras_require=extras_require,
     description='Victoria 2 War Analyzer written in Python!',
     classifiers=[
         'Development Status :: 3 - Alpha',

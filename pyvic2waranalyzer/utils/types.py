@@ -1,3 +1,50 @@
+class Unit:
+    """Represents a unit in a :class:`Battle`
+
+    Attributes
+    ----------
+    soldier: :class:`str`
+        Type of the unit.
+    number: :class:`int`
+        Number of soldiers in the unit.
+    """
+    def __init__(self, soldier: str = None, number: int = 0):
+        self.soldier = soldier
+        self.number = number
+
+    def __bool__(self):
+        if self.soldier and self.number:
+            return True
+        else:
+            return False
+
+    def __str__(self):
+        return self.soldier
+
+    def __add__(self, other):
+        if isinstance(other, Unit):
+            return self.number + other.number
+        else:
+            return self.number + other
+
+    def __radd__(self, other):
+        if other == 0:
+            return self.number
+        else:
+            self.__add__(other)
+
+    def __mul__(self, other):
+        if isinstance(other, Unit):
+            return self.number * other.number
+        else:
+            return self.number * other
+
+    def __rmul__(self, other):
+        self.__mul__(other)
+
+    def asdict(self) -> dict:
+        return {self.soldier: self.number}
+
 class Wargoal:
     """Represents a wargoal in a :class:`War`
 
@@ -93,7 +140,7 @@ class War:
         All defenders.
     battles: List[:class:`Battle`]
         A list of all battles in that war.
-    wargoals: :class:`Wargoal`
+    wargoals: List[:class:`Wargoal` or :class:`OriginalWargoal`]
         The list of wargoals.
     action: :class:`str`
     """
@@ -174,8 +221,8 @@ class Battle:
     defenderLosses: :class:`int`
     attackerLeader: :class:`str`
     defenderLeader: :class:`str`
-    attackerArmy: :class:`dict`
-    defenderArmy: :class:`dict`
+    attackerArmy: List[:class:`Unit`]
+    defenderArmy: List[:class:`Unit`]
     """
     def __init__(self, name: str = None, location: int = None, result: bool = None, defender: str = None,
                  attacker: str = None, attackerLosses: int = 0,
@@ -189,8 +236,8 @@ class Battle:
         self.defenderLosses = defenderLosses
         self.attackerLeader = attackerLeader
         self.defenderLeader = defenderLeader
-        self.attackerArmy = {}
-        self.defenderArmy = {}
+        self.attackerArmy = []
+        self.defenderArmy = []
 
     @property
     def total_losses(self) -> int:

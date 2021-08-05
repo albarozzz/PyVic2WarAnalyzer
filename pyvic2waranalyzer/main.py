@@ -261,13 +261,13 @@ class GameFile:
                 first, second = line.split("=")
                 second = int(second.replace('"', ''))
                 first = self.localize(first)
-                self.war[self.warcounter].battles[self.iter_].attackerArmy.update({first: second})
+                self.war[self.warcounter].battles[self.iter_].attackerArmy.append(Unit(first, second))
             else:
                 line = line.strip()
                 first, second = line.split("=")
                 second = int(second.replace('"', ''))
                 first = self.localize(first)
-                self.war[self.warcounter].battles[self.iter_].defenderArmy.update({first: second})
+                self.war[self.warcounter].battles[self.iter_].defenderArmy.append(Unit(first, second))
 
     def war_parse(self, line):
         if "name=" in line:
