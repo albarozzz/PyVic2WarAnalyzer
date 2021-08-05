@@ -26,15 +26,22 @@ Pyvic2waranalyzer.main
 Pyvic2waranalyzer.utils
 -----------------------------
 
+.. automodule:: pyvic2waranalyzer.utils.types
+
 .. autoclass:: pyvic2waranalyzer.utils.types.Unit
+   :members:
 
 .. autoclass:: pyvic2waranalyzer.utils.types.War
+   :members:
 
 .. autoclass:: pyvic2waranalyzer.utils.types.Battle
+   :members:
 
 .. autoclass:: pyvic2waranalyzer.utils.types.Wargoal
+   :members:
 
 .. autoclass:: pyvic2waranalyzer.utils.types.OriginalWargoal
+   :members:
 
 Indices and tables
 ==================

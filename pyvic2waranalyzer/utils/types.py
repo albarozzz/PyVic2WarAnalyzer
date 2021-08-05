@@ -21,6 +21,9 @@ class Unit:
     def __str__(self):
         return self.soldier
 
+    def __int__(self):
+        return self.number
+
     def __add__(self, other):
         if isinstance(other, Unit):
             return self.number + other.number
@@ -42,7 +45,13 @@ class Unit:
     def __rmul__(self, other):
         self.__mul__(other)
 
-    def asdict(self) -> dict:
+    def asdict(self):
+        """Returns a dict with the type of soldier and number of it.
+
+        Returns
+        -------
+        :class:`dict`
+        """
         return {self.soldier: self.number}
 
 class Wargoal:
@@ -51,7 +60,7 @@ class Wargoal:
     Attributes
     ----------
     state: :class:`int`
-        A state id from 'take state' CB.
+        A province id from 'take state' CB.
     casus_belli: :class:`str`
         The name of the casus belli.
     actor: :class:`str`
@@ -141,7 +150,7 @@ class War:
     battles: List[:class:`Battle`]
         A list of all battles in that war.
     wargoals: List[:class:`Wargoal` or :class:`OriginalWargoal`]
-        The list of wargoals.
+        A list of wargoals.
     action: :class:`str`
     """
     def __init__(self, name: str = None,
@@ -252,10 +261,10 @@ class Battle:
         All forces from a :class:`Battle`
         """
         total = 0
-        for a in self.attackerArmy.values():
-            total += a
-        for b in self.defenderArmy.values():
-            total += b
+        for a in self.attackerArmy:
+            total += int(a)
+        for b in self.defenderArmy:
+            total += int(b)
         return total
 
     def __str__(self):

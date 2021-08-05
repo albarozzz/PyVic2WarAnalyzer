@@ -1,6 +1,6 @@
 # PyVic2WarAnalyzer
-_Python module to analyze Victoria 2 save files_\
-
+_Python module to analyze Victoria 2 save files._\
+See the documentation in https://pyvic2waranalyzer.readthedocs.io/en/stable
 ## Installing
 
 ````
