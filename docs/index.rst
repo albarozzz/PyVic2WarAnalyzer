@@ -14,33 +14,13 @@ Classes and methods
 Pyvic2waranalyzer.main
 -----------------------------
 
-.. autoclass:: pyvic2waranalyzer.GameFile
-
-    :param localisation_folder: Indicates a localisation folder with .csv files.
-    :type localisation_folder: :class:`str` or :class:`list` or :class:`None`
-    :param lang: Indicates the language to translate.
-    :type lang: :class:`str`
-
-.. automethod:: pyvic2waranalyzer.GameFile.scan
+.. autoclass:: pyvic2waranalyzer.main.GameFile
+   :members:
 
 Pyvic2waranalyzer.utils
 -----------------------------
 
 .. automodule:: pyvic2waranalyzer.utils.types
-
-.. autoclass:: pyvic2waranalyzer.utils.types.Unit
-   :members:
-
-.. autoclass:: pyvic2waranalyzer.utils.types.War
-   :members:
-
-.. autoclass:: pyvic2waranalyzer.utils.types.Battle
-   :members:
-
-.. autoclass:: pyvic2waranalyzer.utils.types.Wargoal
-   :members:
-
-.. autoclass:: pyvic2waranalyzer.utils.types.OriginalWargoal
    :members:
 
 Indices and tables
