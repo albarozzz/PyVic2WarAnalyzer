@@ -7,10 +7,10 @@ extras_require = {
 
 setup(
     name='pyvic2waranalyzer',
-    version='1.4.2',
+    version='1.4.3',
     packages=find_packages(),
     url='https://github.com/InternetExplorer404/PyVic2WarAnalyzer',
-    download_url="https://github.com/InternetExplorer404/PyVic2WarAnalyzer/archive/refs/tags/v1.4.2.tar.gz",
+    download_url="https://github.com/InternetExplorer404/PyVic2WarAnalyzer/archive/refs/tags/v1.4.3.tar.gz",
     include_package_data=True,
     license='Unlicense',
     author='Alvaro',
