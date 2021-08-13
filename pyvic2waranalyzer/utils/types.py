@@ -1,3 +1,24 @@
+class UnitList(list):
+    """Represents a list of units in a :class:`Battle`
+    """
+    def __init__(self, *args):
+        super().__init__()
+        for arg in args:
+            super().append(arg)
+
+    def asdict(self):
+        """Returns a dict with all soldiers in a battle and numbers of them.
+
+        Returns
+        -------
+        :class:`dict`
+        """
+        _dict = {}
+        for item in super().__iter__():
+            _dict.update(item.asdict())
+        return _dict
+
+
 class Unit:
     """Represents a unit in a :class:`Battle`
 
@@ -66,7 +87,7 @@ class Wargoal:
     actor: :class:`str`
         The country which made this wargoal.
     country: :class:`str`
-        TAG or country which
+        The name of the country which the actor wants to liberate.
     receiver: :class:`str`
         The country which received this wargoal.
     date: :class:`str`
@@ -123,20 +144,23 @@ class OriginalWargoal(Wargoal):
     Attributes
     ----------
     state: :class:`int`
-        A state id from 'take state' CB.
+        A province id from 'take state' CB.
     casus_belli: :class:`str`
         The name of the casus belli.
+    country: :class:`str`
+        The name of the country which the actor wants to liberate.
     actor: :class:`str`
         The country which made this wargoal.
     receiver: :class:`str`
         The country which received this wargoal.
     """
-    def __init__(self, state: int = None, casus_belli: str = None, actor: str = None, receiver: str = None):
+    def __init__(self, state: int = None, casus_belli: str = None, actor: str = None, receiver: str = None, country: str = None):
         self.state = state
         self.casus_belli = casus_belli
+        self.country = country
         self.actor = actor
         self.receiver = receiver
-        super().__init__(state=self.state, casus_belli=self.casus_belli, actor=self.actor, receiver=self.receiver)
+        super().__init__(state=self.state, casus_belli=self.casus_belli, actor=self.actor, receiver=self.receiver, country=self.country)
 
 class War:
     """Represents a war between 2 nations or more
@@ -245,8 +269,8 @@ class Battle:
         self.defenderLosses = defenderLosses
         self.attackerLeader = attackerLeader
         self.defenderLeader = defenderLeader
-        self.attackerArmy = []
-        self.defenderArmy = []
+        self.attackerArmy = UnitList()
+        self.defenderArmy = UnitList()
 
     @property
     def total_losses(self) -> int:
